@@ -1,0 +1,6 @@
+# Local/temporary input data
+/update/fitch/
+
+# Python
+__pycache__/
+*.pyc
