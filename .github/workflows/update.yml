@@ -24,7 +24,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Update EMBI dataset
-        run: python update/embi.py
+        run: python update/embi.py --upload
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       - name: Commit and push if changed
         run: |

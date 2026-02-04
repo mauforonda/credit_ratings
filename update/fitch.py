@@ -3,6 +3,9 @@
 import json
 import pandas as pd
 from pathlib import Path
+from upload import upload_dataset
+import argparse
+
 
 # con documentos JSON como https://www.fitchratings.com/entity/bolivia-80962881
 
@@ -54,6 +57,19 @@ def procesar_ratings(fn, pais, rating_terms):
     return df[["pais", "fecha", "term", "rating", "cambio"]]
 
 
+def do_upload():
+    parser = argparse.ArgumentParser(
+        description="Extrae y guarda calificaciones de Fitch Ratings."
+    )
+    parser.add_argument(
+        "--upload",
+        action="store_true",
+        help="Sube los datos a Supabase (por defecto solo guarda CSV).",
+    )
+    args = parser.parse_args()
+    return args.upload
+
+
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 df = pd.concat(
     [
@@ -62,3 +78,7 @@ df = pd.concat(
     ]
 )
 df.to_csv(DATA_DIR / "fitch.csv", index=False)
+
+upload = do_upload()
+if upload:
+    upload_dataset("creditratings_fitch", df, ["pais", "fecha", "term"])
